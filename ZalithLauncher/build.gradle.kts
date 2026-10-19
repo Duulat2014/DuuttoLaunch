@@ -69,7 +69,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = com.duut.launcher
+        applicationId = "com.duut.launcher"
         minSdk = 26
         targetSdk = 34
         versionCode = launcherVersionCode

@@ -69,7 +69,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = nameId
+        applicationId = com.duut.launcher
         minSdk = 26
         targetSdk = 34
         versionCode = launcherVersionCode
@@ -79,7 +79,7 @@ android {
     }
 
     buildTypes {
-        val storageProviderId = "$nameId.storage_provider"
+        val storageProviderId = "com.duut.launcher.storage_provider"
 
         getByName("debug") {
             applicationIdSuffix = ".debug"

@@ -24,4 +24,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: DuutLauncher-arm64p
-          path: ZalithLauncher/build/outputs/apk/debug/*p
+          path: ZalithLauncher/build/outputs/apk/debug/*

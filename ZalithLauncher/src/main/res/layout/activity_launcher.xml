@@ -1,65 +1,35 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="ContentDescription">
+    android:background="@color/launcher_background"> <!-- Изменено на изумрудный фон -->
 
-    <ImageView
-        android:id="@+id/background_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/top_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_40sdp"
-        android:background="@color/background_menu_top"
-        app:layout_constraintTop_toTopOf="parent">
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#0e1713" <!-- Темный изумрудный панельный фон -->
+        app:itemIconTint="@color/nav_item_color"
+        app:itemTextColor="@color/nav_item_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
-        <com.movtery.zalithlauncher.ui.view.AnimTextView
-            android:id="@+id/app_title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/_12sdp"
-            android:background="?android:attr/selectableItemBackground"
-            android:textColor="@color/menu_bar_text"
-            android:textSize="@dimen/_16ssp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/download_button"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:layout_marginVertical="@dimen/_3sdp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_download"
-            android:scaleX="1.04"
-            android:scaleY="1.04"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/setting_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="#FFF" />
-
-        <ImageButton
-            android:id="@+id/setting_button"
-            android:layout_width="@dimen/_40sdp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="@dimen/_8sdp"
-            android:layout_marginVertical="@dimen/_3sdp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_menu_settings"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout
 
     <!-- Holding most of the dynamic content -->
     <androidx.fragment.app.FragmentContainerView

@@ -1,37 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/nav_home">
-
-    <!-- Главный экран -->
-    <fragment
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
         android:id="@+id/nav_home"
-        android:name="com.movtery.zalithlauncher.ui.fragment.FragmentLauncher"
-        android:label="Главная" />
-
-    <!-- Вкладка: Версии -->
-    <fragment
+        android:icon="@drawable/ic_menu_home"
+        android:title="Главная" />
+    <item
         android:id="@+id/nav_versions"
-        android:name="com.movtery.zalithlauncher.ui.fragment.VersionsListFragment"
-        android:label="Версии" />
-
-    <!-- Вкладка: Скин -->
-    <fragment
+        android:icon="@drawable/ic_minecraft"
+        android:title="Версии" />
+    <item
         android:id="@+id/nav_skin"
-        android:name="com.movtery.zalithlauncher.ui.fragment.AccountFragment"
-        android:label="Скин" />
-
-    <!-- Вкладка: Настройки -->
-    <fragment
+        android:icon="@drawable/ic_hair"
+        android:title="Скин" />
+    <item
         android:id="@+id/nav_settings"
-        android:name="com.movtery.zalithlauncher.ui.fragment.SettingsFragment"
-        android:label="Настройки" />
-
-    <!-- Вкладка: Скачивание -->
-    <fragment
+        android:icon="@drawable/ic_menu_settings"
+        android:title="Настройки" />
+    <item
         android:id="@+id/nav_download"
-        android:name="com.movtery.zalithlauncher.ui.fragment.DownloadFragment"
-        android:label="Скачивание" />
-
-</navigation>
+        android:icon="@drawable/ic_download"
+        android:title="Скачивание" />
+</menu>

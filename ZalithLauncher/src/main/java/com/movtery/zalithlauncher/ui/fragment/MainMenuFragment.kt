@@ -6,12 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.movtery.anim.AnimPlayer
+import com.movtery.anim.animations.Animations
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.databinding.FragmentLauncherBinding
 import com.movtery.zalithlauncher.event.single.AccountUpdateEvent
 import com.movtery.zalithlauncher.event.single.LaunchGameEvent
 import com.movtery.zalithlauncher.event.single.RefreshVersionsEvent
-import com.movtery.zalithlauncher.feature.version.VersionIconUtils
+import com.movtery.zalithlauncher.feature.version.Version
 import com.movtery.zalithlauncher.feature.version.VersionsManager
 import com.movtery.zalithlauncher.ui.subassembly.account.AccountViewWrapper
 import com.movtery.zalithlauncher.utils.ZHTools
@@ -29,7 +30,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
     private lateinit var accountViewWrapper: AccountViewWrapper
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentLauncherBinding.inflate(layoutInflater)
+        binding = FragmentLauncherBinding.inflate(inflater, container, false)
         accountViewWrapper = AccountViewWrapper(this, binding!!.viewAccount)
         accountViewWrapper.refreshAccountInfo()
         return binding!!.root
@@ -47,7 +48,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, VersionsListFragment::class.java, VersionsListFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.version_manager_no_installed_version, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -56,7 +57,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, AccountFragment::class.java, AccountFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.version_manager_no_installed_version, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -65,7 +66,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, SettingsFragment::class.java, SettingsFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.version_manager_no_installed_version, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -74,7 +75,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, DownloadFragment::class.java, DownloadFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.version_manager_no_installed_version, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -86,28 +87,30 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
 
     private fun refreshCurrentVersion() {
         val b = binding ?: return
-        val version = VersionsManager.getCurrentVersion()
+        val version: Version? = VersionsManager.getCurrentVersion()
         if (version == null) {
-            b.versionName.setText(R.string.global_no_version)
-            b.versionInfo.setText("")
-            b.versionIcon.setImageResource(R.drawable.ic_crafting_table)
+            b.versionName.setText(R.string.version_manager_no_installed_version)
+            b.versionInfo.text = ""
             return
         }
-        b.versionName.text = version.name
-        b.versionInfo.text = VersionsManager.getVersionTypeString(version)
-        VersionIconUtils.loadVersionIcon(b.versionIcon, version)
+        b.versionName.text = version.getVersionName()
+        b.versionInfo.text = ""
     }
 
     private fun listTaskRunning(): Boolean {
-        return ProgressKeeper.hasTasks()
+        return ProgressKeeper.hasOngoingTasks()
     }
 
-    override fun slideIn(animPlayer: AnimPlayer?) {
-        animPlayer?.runAnimation(view)
+    override fun slideIn(animPlayer: AnimPlayer) {
+        binding?.apply {
+            animPlayer.apply(AnimPlayer.Entry(btnPlay, Animations.BounceInRight))
+        }
     }
 
-    override fun slideOut(animPlayer: AnimPlayer?) {
-        animPlayer?.runAnimation(view)
+    override fun slideOut(animPlayer: AnimPlayer) {
+        binding?.apply {
+            animPlayer.apply(AnimPlayer.Entry(btnPlay, Animations.FadeOutLeft))
+        }
     }
 
     override fun onStart() {
@@ -123,11 +126,6 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onAccountUpdateEvent(event: AccountUpdateEvent) {
         accountViewWrapper.refreshAccountInfo()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onVersionChangeEvent(event: VersionsManager.VersionChangeEvent) {
-        refreshCurrentVersion()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

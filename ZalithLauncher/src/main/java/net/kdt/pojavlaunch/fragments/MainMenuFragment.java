@@ -25,6 +25,7 @@ import com.movtery.zalithlauncher.ui.fragment.VersionsListFragment;
 import com.movtery.zalithlauncher.ui.subassembly.account.AccountViewWrapper;
 import com.movtery.zalithlauncher.utils.ZHTools;
 import com.movtery.zalithlauncher.utils.anim.ViewAnimUtils;
+import com.movtery.zalithlauncher.utils.anim.AnimPlayer;
 
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
@@ -122,6 +123,16 @@ public class MainMenuFragment extends FragmentWithAnim {
     }
 
     @Override
+    public void slideIn(AnimPlayer animPlayer) {
+        if (animPlayer != null) animPlayer.runAnimation(getView());
+    }
+
+    @Override
+    public void slideOut(AnimPlayer animPlayer) {
+        if (animPlayer != null) animPlayer.runAnimation(getView());
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
@@ -134,17 +145,17 @@ public class MainMenuFragment extends FragmentWithAnim {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void event(AccountUpdateEvent event) {
+    public void onAccountUpdateEvent(AccountUpdateEvent event) {
         accountViewWrapper.refreshAccountInfo();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void event(VersionsManager.VersionChangeEvent event) {
+    public void onVersionChangeEvent(VersionsManager.VersionChangeEvent event) {
         refreshCurrentVersion();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void event(RefreshVersionsEvent event) {
+    public void onRefreshVersionsEvent(RefreshVersionsEvent event) {
         refreshCurrentVersion();
     }
 }

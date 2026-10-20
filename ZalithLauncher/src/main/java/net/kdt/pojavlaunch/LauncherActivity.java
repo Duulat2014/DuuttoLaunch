@@ -1,13 +1,10 @@
 package net.kdt.pojavlaunch;
 
 import static com.movtery.zalithlauncher.launch.LaunchGame.preLaunch;
-import static net.kdt.pojavlaunch.Tools.currentDisplayMetrics;
 
 import android.Manifest;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
@@ -20,11 +17,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.palette.graphics.Palette;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.kdt.mcgui.ProgressLayout;
 import com.movtery.anim.AnimPlayer;
 import com.movtery.anim.animations.Animations;
@@ -68,24 +67,15 @@ import com.movtery.zalithlauncher.setting.AllSettings;
 import com.movtery.zalithlauncher.task.Task;
 import com.movtery.zalithlauncher.task.TaskExecutors;
 import com.movtery.zalithlauncher.ui.activity.BaseActivity;
-import com.movtery.zalithlauncher.ui.activity.ErrorActivity;
 import com.movtery.zalithlauncher.ui.dialog.EditTextDialog;
 import com.movtery.zalithlauncher.ui.dialog.TipDialog;
 import com.movtery.zalithlauncher.ui.fragment.AccountFragment;
 import com.movtery.zalithlauncher.ui.fragment.BaseFragment;
-import com.movtery.zalithlauncher.ui.fragment.DownloadFragment;
-import com.movtery.zalithlauncher.ui.fragment.DownloadModFragment;
-import com.movtery.zalithlauncher.ui.fragment.SettingsFragment;
 import com.movtery.zalithlauncher.ui.subassembly.settingsbutton.ButtonType;
 import com.movtery.zalithlauncher.ui.subassembly.settingsbutton.SettingsButtonWrapper;
-import com.movtery.zalithlauncher.ui.subassembly.view.DraggableViewWrapper;
 import com.movtery.zalithlauncher.utils.StoragePermissionsUtils;
 import com.movtery.zalithlauncher.utils.ZHTools;
-import com.movtery.zalithlauncher.utils.anim.ViewAnimUtils;
 import com.movtery.zalithlauncher.utils.file.FileTools;
-import com.movtery.zalithlauncher.utils.image.ImageUtils;
-import com.movtery.zalithlauncher.utils.stringutils.ShiftDirection;
-import com.movtery.zalithlauncher.utils.stringutils.StringUtils;
 
 import net.kdt.pojavlaunch.authenticator.microsoft.MicrosoftBackgroundLogin;
 import net.kdt.pojavlaunch.contracts.OpenDocumentWithExtension;
@@ -107,7 +97,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Random;
 import java.util.concurrent.Future;
 
 public class LauncherActivity extends BaseActivity {
@@ -125,21 +114,22 @@ public class LauncherActivity extends BaseActivity {
     private NotificationManager mNotificationManager;
     private Future<?> checkNotice;
 
-    /* Allows to switch from one button "type" to another */
     private final FragmentManager.FragmentLifecycleCallbacks mFragmentCallbackListener = new FragmentManager.FragmentLifecycleCallbacks() {
         @Override
         public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
             if (f instanceof MainMenuFragment) {
-                mSettingsButtonWrapper.setButtonType(ButtonType.SETTINGS);
+                if (mSettingsButtonWrapper != null) {
+                    mSettingsButtonWrapper.setButtonType(ButtonType.SETTINGS);
+                }
             } else {
-                mSettingsButtonWrapper.setButtonType(ButtonType.HOME);
+                if (mSettingsButtonWrapper != null) {
+                    mSettingsButtonWrapper.setButtonType(ButtonType.HOME);
+                }
             }
         }
     };
 
     private final TaskCountListener mDoubleLaunchPreventionListener = taskCount -> {
-        // Hide the notification that starts the game if there are tasks executing.
-        // Prevents the user from trying to launch the game with tasks ongoing.
         if (taskCount > 0) {
             TaskExecutors.runInUIThread(() -> mNotificationManager.cancel(NotificationUtils.NOTIFICATION_ID_GAME_START));
         }
@@ -162,7 +152,6 @@ public class LauncherActivity extends BaseActivity {
     @Subscribe()
     public void event(SwapToLoginEvent event) {
         Fragment currentFragment = getCurrentFragment();
-        //如果当前可见的Fragment不为空，则判断当前的Fragment是否为AccountFragment，不是就跳转至AccountFragment
         if (currentFragment == null || getVisibleFragment(AccountFragment.TAG) != null) return;
         ZHTools.swapFragmentWithAnim(currentFragment, AccountFragment.class, AccountFragment.TAG, null);
     }
@@ -354,9 +343,14 @@ public class LauncherActivity extends BaseActivity {
         setContentView(binding.getRoot());
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        NavController navController = navHostFragment.getNavController();
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+        if (navHostFragment != null) {
+            NavController navController = navHostFragment.getNavController();
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            if (bottomNavigationView != null) {
+                NavigationUI.setupWithNavController(bottomNavigationView, navController);
+            }
+        }
+
         mRequestNotificationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isAllowed -> {
@@ -382,7 +376,6 @@ public class LauncherActivity extends BaseActivity {
 
         checkNotice();
 
-        //检查已经下载后的包，或者检查更新
         Task.runTask(() -> {
             UpdateUtils.checkDownloadedPackage(this, false, true);
             return null;
@@ -446,7 +439,6 @@ public class LauncherActivity extends BaseActivity {
             if (checkNotice.isCancelled() || noticeInfo == null) {
                 return;
             }
-            //当偏好设置内是开启通知栏 或者 检测到通知编号不为偏好设置里保存的值时，显示通知栏
             if (AllSettings.getNoticeDefault().getValue() ||
                     (noticeInfo.numbering != AllSettings.getNoticeNumbering().getValue())) {
                 TaskExecutors.runInUIThread(() -> setNotice(true));
@@ -487,41 +479,7 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private void refreshBackground() {
-        BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, this::refreshTopBarColor);
-    }
-
-    private void refreshTopBarColor(boolean loadFromBackground) {
-        int backgroundMenuTop = ContextCompat.getColor(this, R.color.background_menu_top);
-
-        if (loadFromBackground) {
-            Bitmap bitmap = ImageUtils.getBitmapFromImageView(binding.backgroundView);
-            if (bitmap != null) {
-                Palette palette = Palette.from(bitmap).generate();
-
-                boolean isDarkMode = ZHTools.isDarkMode(this);
-                binding.topLayout.setBackgroundColor(
-                        isDarkMode ?
-                                palette.getDarkVibrantColor(backgroundMenuTop) :
-                                palette.getLightVibrantColor(backgroundMenuTop)
-                );
-
-                int mutedColor = isDarkMode ?
-                        palette.getLightMutedColor(0xFFFFFFFF) :
-                        palette.getDarkMutedColor(0xFFFFFFFF);
-
-                ColorStateList colorStateList = ColorStateList.valueOf(mutedColor);
-                binding.appTitleText.setTextColor(mutedColor);
-                binding.downloadButton.setImageTintList(colorStateList);
-                binding.settingButton.setImageTintList(colorStateList);
-
-                return;
-            }
-        }
-        binding.topLayout.setBackgroundColor(backgroundMenuTop);
-        binding.appTitleText.setTextColor(ContextCompat.getColor(this, R.color.menu_bar_text));
-        ColorStateList colorStateList = ColorStateList.valueOf(0xFFFFFFFF);
-        binding.downloadButton.setImageTintList(colorStateList);
-        binding.settingButton.setImageTintList(colorStateList);
+        BackgroundManager.setBackgroundImage(this, BackgroundType.MAIN_MENU, binding.backgroundView, loadFromBackground -> {});
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -534,7 +492,11 @@ public class LauncherActivity extends BaseActivity {
     }
 
     private Fragment getCurrentFragment() {
-        return getVisibleFragment(binding.containerFragment.getId());
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        if (navHostFragment != null && navHostFragment.getChildFragmentManager().getFragments().size() > 0) {
+            return navHostFragment.getChildFragmentManager().getFragments().get(0);
+        }
+        return null;
     }
 
     private Fragment checkFragmentAvailability(Fragment fragment) {
@@ -582,12 +544,9 @@ public class LauncherActivity extends BaseActivity {
         BigDecimal opacity = BigDecimal.valueOf(pageOpacity).divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
         float v = opacity.floatValue();
 
-        binding.containerFragment.setAlpha(v);
-
-        BigDecimal adjustedOpacity = BackgroundManager.hasBackgroundImage(BackgroundType.MAIN_MENU)
-                ? opacity.subtract(BigDecimal.valueOf(0.1)).max(BigDecimal.ZERO)
-                : BigDecimal.ONE;
-
-        binding.topLayout.setAlpha(adjustedOpacity.floatValue());
-    }
+        if (binding.navHostFragment != null) {
+            binding.navHostFragment.setAlpha(v);
+        }
+    }               
 }
+ 

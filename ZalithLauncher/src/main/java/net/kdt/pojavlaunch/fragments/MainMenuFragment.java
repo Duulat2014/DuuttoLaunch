@@ -15,8 +15,7 @@ import com.movtery.zalithlauncher.event.single.LaunchGameEvent;
 import com.movtery.zalithlauncher.event.single.RefreshVersionsEvent;
 import com.movtery.zalithlauncher.feature.version.Version;
 import com.movtery.zalithlauncher.feature.version.VersionIconUtils;
-import com.movtery.zalithlauncher.feature.version.VersionManager;
-import com.movtery.zalithlauncher.ui.Animations;
+import com.movtery.zalithlauncher.feature.version.VersionsManager;
 import com.movtery.zalithlauncher.ui.fragment.AccountFragment;
 import com.movtery.zalithlauncher.ui.fragment.DownloadFragment;
 import com.movtery.zalithlauncher.ui.fragment.FragmentWithAnim;
@@ -24,7 +23,6 @@ import com.movtery.zalithlauncher.ui.fragment.SettingsFragment;
 import com.movtery.zalithlauncher.ui.fragment.VersionsListFragment;
 import com.movtery.zalithlauncher.ui.subassembly.account.AccountViewWrapper;
 import com.movtery.zalithlauncher.utils.ZHTools;
-import com.movtery.zalithlauncher.utils.anim.ViewAnimUtils;
 import com.movtery.zalithlauncher.utils.anim.AnimPlayer;
 
 import net.kdt.pojavlaunch.R;
@@ -64,7 +62,6 @@ public class MainMenuFragment extends FragmentWithAnim {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, VersionsListFragment.class, VersionsListFragment.TAG, null);
             } else {
-                ViewAnimUtils.setViewAnim(binding.cardVersions, Animations.Shake);
                 Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show();
             }
         });
@@ -74,7 +71,6 @@ public class MainMenuFragment extends FragmentWithAnim {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, AccountFragment.class, AccountFragment.TAG, null);
             } else {
-                ViewAnimUtils.setViewAnim(binding.cardSkin, Animations.Shake);
                 Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show();
             }
         });
@@ -84,7 +80,6 @@ public class MainMenuFragment extends FragmentWithAnim {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, SettingsFragment.class, SettingsFragment.TAG, null);
             } else {
-                ViewAnimUtils.setViewAnim(binding.cardSettings, Animations.Shake);
                 Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show();
             }
         });
@@ -94,7 +89,6 @@ public class MainMenuFragment extends FragmentWithAnim {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, DownloadFragment.class, DownloadFragment.TAG, null);
             } else {
-                ViewAnimUtils.setViewAnim(binding.cardDownload, Animations.Shake);
                 Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show();
             }
         });
@@ -113,8 +107,8 @@ public class MainMenuFragment extends FragmentWithAnim {
             binding.versionIcon.setImageResource(R.drawable.ic_crafting_table);
             return;
         }
-        binding.versionName.setText(version.name);
-        binding.versionInfo.setText(VersionManager.INSTANCE.getVersionTypeString(version));
+        binding.versionName.setText(version.versionString);
+        binding.versionInfo.setText(VersionsManager.INSTANCE.getVersionTypeString(version));
         VersionIconUtils.INSTANCE.loadVersionIcon(binding.versionIcon, version);
     }
 

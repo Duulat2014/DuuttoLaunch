@@ -12,6 +12,13 @@
         android:scaleType="centerCrop"
         android:contentDescription="@null" />
 
+    <!-- Старый контейнер для совместимости с ZHTools -->
+    <FrameLayout
+        android:id="@+id/container_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp" />
+
     <!-- Основной контейнер с навигацией (фрагменты) -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
@@ -39,7 +46,7 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="56dp" />
 
-    <!-- Блок уведомлений (Notice Layout) -->
+    <!-- Блок уведомлений -->
     <LinearLayout
         android:id="@+id/noticeLayout"
         android:layout_width="match_parent"

@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+
+    <fragment
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_menu_home"
-        android:title="Главная" />
-    <item
+        android:name="com.movtery.zalithlauncher.ui.fragment.MainMenuFragment"
+        android:label="MainMenu" />
+
+    <!-- Добавьте остальные фрагменты по аналогии с их реальными именами ID из меню -->
+    <fragment
         android:id="@+id/nav_versions"
-        android:icon="@drawable/ic_minecraft"
-        android:title="Версии" />
-    <item
+        android:name="com.movtery.zalithlauncher.ui.fragment.VersionsListFragment"
+        android:label="Versions" />
+
+    <fragment
         android:id="@+id/nav_skin"
-        android:icon="@drawable/ic_hair"
-        android:title="Скин" />
-    <item
+        android:name="com.movtery.zalithlauncher.ui.fragment.AccountFragment"
+        android:label="Account" />
+
+    <fragment
         android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_menu_settings"
-        android:title="Настройки" />
-    <item
+        android:name="com.movtery.zalithlauncher.ui.fragment.SettingsFragment"
+        android:label="Settings" />
+
+    <fragment
         android:id="@+id/nav_download"
-        android:icon="@drawable/ic_download"
-        android:title="Скачивание" />
-</menu>
+        android:name="com.movtery.zalithlauncher.ui.fragment.DownloadFragment"
+        android:label="Download" />
+
+</navigation>

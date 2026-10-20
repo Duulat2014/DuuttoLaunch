@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_menu_home"
         android:title="Главная" />
     <item
         android:id="@+id/nav_versions"
-        android:icon="@drawable/ic_versions"
+        android:icon="@drawable/ic_minecraft"
         android:title="Версии" />
     <item
         android:id="@+id/nav_skin"
-        android:icon="@drawable/ic_skin"
+        android:icon="@drawable/ic_hair"
         android:title="Скин" />
     <item
         android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_menu_settings"
         android:title="Настройки" />
     <item
         android:id="@+id/nav_download"

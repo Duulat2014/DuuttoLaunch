@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.movtery.anim.AnimPlayer;
 import com.movtery.zalithlauncher.databinding.FragmentLauncherBinding;
 import com.movtery.zalithlauncher.event.single.AccountUpdateEvent;
 import com.movtery.zalithlauncher.event.single.LaunchGameEvent;
@@ -23,7 +24,6 @@ import com.movtery.zalithlauncher.ui.fragment.SettingsFragment;
 import com.movtery.zalithlauncher.ui.fragment.VersionsListFragment;
 import com.movtery.zalithlauncher.ui.subassembly.account.AccountViewWrapper;
 import com.movtery.zalithlauncher.utils.ZHTools;
-import com.movtery.zalithlauncher.utils.anim.AnimPlayer;
 
 import net.kdt.pojavlaunch.R;
 import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper;
@@ -100,16 +100,16 @@ public class MainMenuFragment extends FragmentWithAnim {
     }
 
     private void refreshCurrentVersion() {
-        Version version = VersionsManager.INSTANCE.getCurrentVersion();
+        Version version = VersionsManager.getCurrentVersion();
         if(version == null) {
             binding.versionName.setText(R.string.global_no_version);
             binding.versionInfo.setText("");
             binding.versionIcon.setImageResource(R.drawable.ic_crafting_table);
             return;
         }
-        binding.versionName.setText(version.versionString);
-        binding.versionInfo.setText(VersionsManager.INSTANCE.getVersionTypeString(version));
-        VersionIconUtils.INSTANCE.loadVersionIcon(binding.versionIcon, version);
+        binding.versionName.setText(version.name);
+        binding.versionInfo.setText(VersionsManager.getVersionTypeString(version));
+        VersionIconUtils.loadVersionIcon(binding.versionIcon, version);
     }
 
     private boolean listTaskRunning() {

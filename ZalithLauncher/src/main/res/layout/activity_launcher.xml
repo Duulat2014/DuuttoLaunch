@@ -29,9 +29,7 @@
         android:layout_height="56dp"
         android:layout_gravity="bottom"
         android:background="?attr/colorSurface"
-        app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/bottom_nav_color_selector"
-        app:itemTextColor="@color/bottom_nav_color_selector" />
+        app:menu="@menu/bottom_nav_menu" />
 
     <!-- Панель прогресса загрузки -->
     <com.kdt.mcgui.ProgressLayout
@@ -70,7 +68,7 @@
             android:id="@+id/noticeDateView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/light_gray"
+            android:textColor="#CCCCCC"
             android:textSize="12sp" />
 
         <Button

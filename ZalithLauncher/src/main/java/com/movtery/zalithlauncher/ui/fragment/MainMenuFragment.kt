@@ -5,12 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.movtery.anim.AnimPlayer
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.databinding.FragmentLauncherBinding
 import com.movtery.zalithlauncher.event.single.AccountUpdateEvent
 import com.movtery.zalithlauncher.event.single.LaunchGameEvent
 import com.movtery.zalithlauncher.event.single.RefreshVersionsEvent
-import com.movtery.zalithlauncher.feature.version.Version
 import com.movtery.zalithlauncher.feature.version.VersionIconUtils
 import com.movtery.zalithlauncher.feature.version.VersionsManager
 import com.movtery.zalithlauncher.ui.subassembly.account.AccountViewWrapper
@@ -47,7 +47,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, VersionsListFragment::class.java, VersionsListFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.tasks_ongoing, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -56,7 +56,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, AccountFragment::class.java, AccountFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.tasks_ongoing, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -65,7 +65,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, SettingsFragment::class.java, SettingsFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.tasks_ongoing, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -74,7 +74,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, DownloadFragment::class.java, DownloadFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.tasks_ongoing, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -100,6 +100,14 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
 
     private fun listTaskRunning(): Boolean {
         return ProgressKeeper.hasTasks()
+    }
+
+    override fun slideIn(animPlayer: AnimPlayer?) {
+        animPlayer?.runAnimation(view)
+    }
+
+    override fun slideOut(animPlayer: AnimPlayer?) {
+        animPlayer?.runAnimation(view)
     }
 
     override fun onStart() {

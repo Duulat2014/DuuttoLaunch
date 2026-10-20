@@ -1,9 +1,14 @@
 package net.kdt.pojavlaunch.utils;
 
+import android.os.Build;
+import android.system.Os;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 public class FileUtils {
+
     /**
      * Check if a file denoted by a String path exists.
      * @param filePath the path to check
@@ -44,7 +49,6 @@ public class FileUtils {
         if(targetFile.isFile()) return false;
         if(targetFile.exists()) return targetFile.canWrite();
         else return targetFile.mkdirs();
-
     }
 
     /**
@@ -79,5 +83,56 @@ public class FileUtils {
         File parentFile = targetFile.getParentFile();
         if(parentFile == null) throw new IOException("targetFile does not have a parent");
         ensureDirectory(parentFile);
+    }
+
+    /**
+     * Безопасное создание симлинка с фоллбэком на копирование для Android 15+
+     */
+    public static void makeSymlinkOrCopy(File target, File link) {
+        try {
+            // На Android 15 (API 35) и выше симлинки заблокированы системой безопасности
+            if (Build.VERSION.SDK_INT >= 35) {
+                throw new UnsupportedOperationException("Symlinks restricted on Android 15+");
+            }
+            if (link.exists()) {
+                link.delete();
+            }
+            // Пытаемся создать стандартную символическую ссылку
+            Os.symlink(target.getAbsolutePath(), link.getAbsolutePath());
+        } catch (Exception e) {
+            // Если симлинк создать не удалось, выполняем физическое копирование
+            try {
+                if (target.exists()) {
+                    if (target.isDirectory()) {
+                        copyDirectory(target, link);
+                    } else {
+                        if (link.getParentFile() != null) {
+                            link.getParentFile().mkdirs();
+                        }
+                        Files.copy(target.toPath(), link.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private static void copyDirectory(File source, File target) throws IOException {
+        if (!target.exists()) {
+            target.mkdirs();
+        }
+        String[] files = source.list();
+        if (files != null) {
+            for (String file : files) {
+                File srcFile = new File(source, file);
+                File destFile = new File(target, file);
+                if (srcFile.isDirectory()) {
+                    copyDirectory(srcFile, destFile);
+                } else {
+                    Files.copy(srcFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        }
     }
 }

@@ -30,7 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import com.movtery.zalithlauncher.InfoDistributor;
-import com.movtery.zalithlauncher.fragments.MainMenuFragment;
+import com.movtery.zalithlauncher.ui.fragment.MainMenuFragment;
 import com.movtery.zalithlauncher.R;
 import com.movtery.zalithlauncher.context.ContextExecutor;
 import com.movtery.zalithlauncher.utils.LauncherProfiles;

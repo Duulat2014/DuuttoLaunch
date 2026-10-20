@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.databinding.FragmentLauncherBinding
 import com.movtery.zalithlauncher.event.single.AccountUpdateEvent
 import com.movtery.zalithlauncher.event.single.LaunchGameEvent
@@ -14,8 +15,6 @@ import com.movtery.zalithlauncher.feature.version.VersionIconUtils
 import com.movtery.zalithlauncher.feature.version.VersionsManager
 import com.movtery.zalithlauncher.ui.subassembly.account.AccountViewWrapper
 import com.movtery.zalithlauncher.utils.ZHTools
-import net.kdt.pojavlaunch.R
-import net.kdt.pojavlaunch.progresskeeper.ProgressKeeper
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -65,7 +64,7 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
             if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, SettingsFragment::class.java, SettingsFragment.TAG, null)
             } else {
-                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.task_is_running, Toast.LENGTH_SHORT).`show`()
             }
         }
 
@@ -86,20 +85,21 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
 
     private fun refreshCurrentVersion() {
         val b = binding ?: return
-        val version = VersionsManager.INSTANCE.getCurrentVersion()
+        val version = VersionsManager.getCurrentVersion()
         if (version == null) {
             b.versionName.setText(R.string.global_no_version)
             b.versionInfo.setText("")
             b.versionIcon.setImageResource(R.drawable.ic_crafting_table)
             return
         }
-        b.versionName.text = version.name
-        b.versionInfo.text = VersionsManager.INSTANCE.getVersionTypeString(version)
-        VersionIconUtils.INSTANCE.loadVersionIcon(b.versionIcon, version)
+        b.versionName.text = version.versionString
+        b.versionInfo.text = VersionsManager.getVersionTypeString(version)
+        VersionIconUtils.loadVersionIcon(b.versionIcon, version)
     }
 
     private fun listTaskRunning(): Boolean {
-        return ProgressKeeper.hasTasks()
+        val b = binding ?: return false
+        return b.progressLayout.hasProcesses()
     }
 
     override fun onStart() {
@@ -115,11 +115,6 @@ class MainMenuFragment : FragmentWithAnim(R.layout.fragment_launcher) {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onAccountUpdateEvent(event: AccountUpdateEvent) {
         accountViewWrapper.refreshAccountInfo()
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onVersionChangeEvent(event: VersionsManager.VersionChangeEvent) {
-        refreshCurrentVersion()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

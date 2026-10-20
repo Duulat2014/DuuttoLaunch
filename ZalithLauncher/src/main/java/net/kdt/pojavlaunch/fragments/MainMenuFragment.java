@@ -62,46 +62,42 @@ public class MainMenuFragment extends FragmentWithAnim {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        binding.aboutText.setText(InfoCenter.replaceName(requireActivity(), R.string.about_tab));
-        binding.aboutButton.setOnClickListener(v -> ZHTools.swapFragmentWithAnim(this, AboutFragment.class, AboutFragment.TAG, null));
-        binding.customControlButton.setOnClickListener(v -> ZHTools.swapFragmentWithAnim(this, ControlButtonFragment.class, ControlButtonFragment.TAG, null));
-        binding.openMainDirButton.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(FilesFragment.BUNDLE_LIST_PATH, PathManager.DIR_GAME_HOME);
-            ZHTools.swapFragmentWithAnim(this, FilesFragment.class, FilesFragment.TAG, bundle);
-        });
-        binding.installJarButton.setOnClickListener(v -> runInstallerWithConfirmation(false));
-        binding.installJarButton.setOnLongClickListener(v -> {
-            runInstallerWithConfirmation(true);
-            return true;
-        });
-        binding.shareLogsButton.setOnClickListener(v -> ZHTools.shareLogs(requireActivity()));
+        super.onViewCreated(view, savedInstanceState);
 
-        binding.version.setOnClickListener(v -> {
-            if (!isTaskRunning()) {
+        // Кнопка запуска игры
+        binding.btnPlay.setOnClickListener(v -> EventBus.getDefault().post(new LaunchGameEvent()));
+
+        // Карточка: Версии
+        binding.cardVersions.setOnClickListener(v -> {
+            if (!listTaskRunning()) {
                 ZHTools.swapFragmentWithAnim(this, VersionsListFragment.class, VersionsListFragment.TAG, null);
-            } else {
-                ViewAnimUtils.setViewAnim(binding.version, Animations.Shake);
-                TaskExecutors.runInUIThread(() -> Toast.makeText(requireContext(), R.string.version_manager_task_in_progress, Toast.LENGTH_SHORT).show());
-            }
-        });
-        binding.managerProfileButton.setOnClickListener(v -> {
-            if (!isTaskRunning()) {
-                ViewAnimUtils.setViewAnim(binding.managerProfileButton, Animations.Pulse);
-                ZHTools.swapFragmentWithAnim(this, VersionManagerFragment.class, VersionManagerFragment.TAG, null);
-            } else {
-                ViewAnimUtils.setViewAnim(binding.managerProfileButton, Animations.Shake);
-                TaskExecutors.runInUIThread(() -> Toast.makeText(requireContext(), R.string.version_manager_task_in_progress, Toast.LENGTH_SHORT).show());
             }
         });
 
-        binding.playButton.setOnClickListener(v -> EventBus.getDefault().post(new LaunchGameEvent()));
+        // Карточка: Скин
+        binding.cardSkin.setOnClickListener(v -> {
+            if (!listTaskRunning()) {
+                ZHTools.swapFragmentWithAnim(this, AccountFragment.class, AccountFragment.TAG, null);
+            }
+        });
 
-        binding.versionName.setSelected(true);
-        binding.versionInfo.setSelected(true);
+        // Карточка: Настройки
+        binding.cardSettings.setOnClickListener(v -> {
+            if (!listTaskRunning()) {
+                ZHTools.swapFragmentWithAnim(this, SettingsFragment.class, SettingsFragment.TAG, null);
+            }
+        });
+
+        // Карточка: Скачивание
+        binding.cardDownload.setOnClickListener(v -> {
+            if (!listTaskRunning()) {
+                ZHTools.swapFragmentWithAnim(this, DownloadFragment.class, DownloadFragment.TAG, null);
+            }
+        });
 
         refreshCurrentVersion();
     }
+    
 
     private void refreshCurrentVersion() {
         Version version = VersionsManager.INSTANCE.getCurrentVersion();

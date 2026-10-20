@@ -76,7 +76,7 @@ import com.movtery.zalithlauncher.ui.subassembly.settingsbutton.SettingsButtonWr
 import com.movtery.zalithlauncher.utils.StoragePermissionsUtils;
 import com.movtery.zalithlauncher.utils.ZHTools;
 import com.movtery.zalithlauncher.utils.file.FileTools;
-import com.movtery.zalithlauncher.fragments.MainMenuFragment;
+import com.movtery.zalithlauncher.ui.fragment.MainMenuFragment;
 
 import net.kdt.pojavlaunch.authenticator.microsoft.MicrosoftBackgroundLogin;
 import net.kdt.pojavlaunch.contracts.OpenDocumentWithExtension;

@@ -353,8 +353,6 @@ public class LauncherActivity extends BaseActivity {
         binding = ActivityLauncherBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        processFragment();
-        processViews();
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
         NavController navController = navHostFragment.getNavController();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
@@ -389,105 +387,6 @@ public class LauncherActivity extends BaseActivity {
             UpdateUtils.checkDownloadedPackage(this, false, true);
             return null;
         }).execute();
-    }
-
-    private void processFragment() {
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                Fragment currentFragment = getCurrentFragment();
-                if (currentFragment instanceof BaseFragment && !((BaseFragment) currentFragment).onBackPressed()) {
-                    //Fragment那边拒绝了返回事件
-                    return;
-                }
-
-                //如果栈中只剩下1个或没有Fragment，则直接退出启动器
-                if (getSupportFragmentManager().getBackStackEntryCount() <= 1) {
-                    finish();
-                } else {
-                    getSupportFragmentManager().popBackStackImmediate();
-                }
-            }
-        });
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        //如果栈中没有Fragment，那么就将主Fragment添加进来
-        if (fragmentManager.getBackStackEntryCount() < 1) {
-            fragmentManager.beginTransaction()
-                    .setReorderingAllowed(true)
-                    .addToBackStack(MainMenuFragment.TAG)
-                    .add(R.id.container_fragment, MainMenuFragment.class, null, MainMenuFragment.TAG).commit();
-        }
-    }
-
-    private void processViews() {
-        refreshBackground();
-        setPageOpacity(AllSettings.getPageOpacity().getValue());
-        mSettingsButtonWrapper = new SettingsButtonWrapper(binding.settingButton);
-        mSettingsButtonWrapper.setOnTypeChangeListener(type -> ViewAnimUtils.setViewAnim(binding.settingButton, Animations.Pulse));
-        binding.downloadButton.setOnClickListener(v -> {
-            Fragment fragment = getSupportFragmentManager().findFragmentById(binding.containerFragment.getId());
-            if (fragment != null && !(fragment instanceof DownloadFragment || fragment instanceof DownloadModFragment)) {
-                ViewAnimUtils.setViewAnim(binding.downloadButton, Animations.Pulse);
-                ZHTools.swapFragmentWithAnim(fragment, DownloadFragment.class, DownloadFragment.TAG, null);
-            }
-        });
-        binding.settingButton.setOnClickListener(v -> {
-            ViewAnimUtils.setViewAnim(binding.settingButton, Animations.Pulse);
-            Fragment fragment = getSupportFragmentManager().findFragmentById(binding.containerFragment.getId());
-            if (fragment instanceof MainMenuFragment) {
-                ZHTools.swapFragmentWithAnim(fragment, SettingsFragment.class, SettingsFragment.TAG, null);
-            } else {
-                // The setting button doubles as a home button now
-                Tools.backToMainMenu(this);
-            }
-        });
-        binding.appTitleText.setText(InfoDistributor.APP_NAME);
-        binding.appTitleText.setOnClickListener(v -> {
-            String shiftedString = StringUtils.shiftString(binding.appTitleText.getText().toString(), ShiftDirection.RIGHT, 1);
-            if (new Random().nextInt(100) < 20 && shiftedString.equals(InfoDistributor.APP_NAME)) {
-                ErrorActivity.showEasterEgg(this);
-                return;
-            }
-            binding.appTitleText.setText(shiftedString);
-        });
-
-        binding.progressLayout.observe(ProgressLayout.DOWNLOAD_MINECRAFT);
-        binding.progressLayout.observe(ProgressLayout.UNPACK_RUNTIME);
-        binding.progressLayout.observe(ProgressLayout.INSTALL_RESOURCE);
-        binding.progressLayout.observe(ProgressLayout.LOGIN_ACCOUNT);
-        binding.progressLayout.observe(ProgressLayout.DOWNLOAD_VERSION_LIST);
-        binding.progressLayout.observe(ProgressLayout.CHECKING_MODS);
-
-        binding.noticeGotButton.setOnClickListener(v -> {
-            setNotice(false);
-            AllSettings.getNoticeDefault().put(false).save();
-        });
-        new DraggableViewWrapper(binding.noticeLayout, new DraggableViewWrapper.AttributesFetcher() {
-            @NonNull
-            @Override
-            public DraggableViewWrapper.ScreenPixels getScreenPixels() {
-                return new DraggableViewWrapper.ScreenPixels(0, 0,
-                        currentDisplayMetrics.widthPixels - binding.noticeLayout.getWidth(),
-                        currentDisplayMetrics.heightPixels - binding.noticeLayout.getHeight());
-            }
-
-            @NonNull
-            @Override
-            public int[] get() {
-                return new int[]{(int) binding.noticeLayout.getX(), (int) binding.noticeLayout.getY()};
-            }
-
-            @Override
-            public void set(int x, int y) {
-                binding.noticeLayout.setX(x);
-                binding.noticeLayout.setY(y);
-            }
-        }).init();
-
-        //愚人节彩蛋
-        if (ZHTools.checkDate(4, 1)) binding.hair.setVisibility(View.VISIBLE);
-        else binding.hair.setVisibility(View.GONE);
     }
 
     @Override

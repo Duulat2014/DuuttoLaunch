@@ -26,10 +26,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentActivity;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import com.movtery.zalithlauncher.InfoDistributor;
+import com.movtery.zalithlauncher.fragments.MainMenuFragment;
 import com.movtery.zalithlauncher.R;
 import com.movtery.zalithlauncher.context.ContextExecutor;
 import com.movtery.zalithlauncher.utils.LauncherProfiles;
@@ -44,7 +45,7 @@ import com.movtery.zalithlauncher.utils.ZHTools;
 import com.movtery.zalithlauncher.utils.runtime.SelectRuntimeUtils;
 import com.movtery.zalithlauncher.utils.stringutils.StringUtils;
 
-import net.kdt.pojavlaunch.fragments.MainMenuFragment;
+
 import net.kdt.pojavlaunch.lifecycle.ContextExecutorTask;
 import net.kdt.pojavlaunch.memory.MemoryHoleFinder;
 import net.kdt.pojavlaunch.memory.SelfMapsParser;

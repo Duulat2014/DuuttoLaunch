@@ -72,8 +72,8 @@ android {
         applicationId = "com.duut.launcher"
         minSdk = 26
         targetSdk = 34
-        versionCode = launcherVersionCode
-        versionName = launcherVersionName
+        versionCode = 141401
+        versionName = "1.0.0.0"
         multiDexEnabled = true //important
         manifestPlaceholders["launcher_name"] = launcherAPPName
     }

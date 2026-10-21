@@ -263,7 +263,7 @@ public class MultiRTUtils {
                     }
                     Os.symlink(tarEntry.getLinkName(), destPath.getAbsolutePath());
                 } catch (Throwable e) {
-                    Logging.e("MultiRT", Tools.printStackTrace(e));
+                    Logging.e("MultiRT", e.toString());
             }
             } else if (tarEntry.isDirectory()) {
                 net.kdt.pojavlaunch.utils.FileUtils.ensureDirectory(destPath);

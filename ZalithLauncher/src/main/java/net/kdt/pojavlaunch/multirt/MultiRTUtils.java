@@ -257,13 +257,14 @@ public class MultiRTUtils {
             net.kdt.pojavlaunch.utils.FileUtils.ensureParentDirectory(destPath);
             if (tarEntry.isSymbolicLink()) {
                 try {
-                    // android.system.Os
-                    // Libcore one support all Android versions
-                    Os.symlink(tarEntry.getName(), tarEntry.getLinkName());
+                    File parent = destPath.getParentFile();
+                    if (parent != null && !parent.exists()) {
+                        parent.mkdirs();
+                    }
+                    Os.symlink(tarEntry.getLinkName(), destPath.getAbsolutePath());
                 } catch (Throwable e) {
-                    Logging.e("MultiRT", Tools.printToString(e));
-                }
-
+                    Logging.e("MultiRT", Tools.printStackTrace(e));
+            }
             } else if (tarEntry.isDirectory()) {
                 net.kdt.pojavlaunch.utils.FileUtils.ensureDirectory(destPath);
             } else if (!destPath.exists() || destPath.length() != tarEntry.getSize()) {
